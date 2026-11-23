@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Mosquito Shooter</title>
+<meta name="description" content="A funny, chaotic arcade shooter: defend your sleeping hero from waves of mosquitoes. Play free in your browser or install it as an app.">
+<meta name="theme-color" content="#0b0820">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mosquito Shooter">
+<meta property="og:title" content="Mosquito Shooter">
+<meta property="og:description" content="Defend the sleeping hero from the mosquito horde!">
+<link rel="preload" href="assets/fonts/bangers-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/fredoka-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <div id="game">
+    <canvas id="cv" aria-label="Mosquito Shooter game"></canvas>
+    <div id="redflash"></div>
+
+    <!-- ============ HUD ============ -->
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <button class="ibtn" id="btnPause" aria-label="Pause">
+          <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4.2" height="14" rx="1.5"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.5"/></svg>
+        </button>
+        <div class="scorebox">
+          <div class="lbl">SCORE</div>
+          <div class="score" id="score">0</div>
+        </div>
+        <div class="hud-right">
+          <button class="ibtn" id="btnSoundHud" aria-label="Mute / unmute"><svg viewBox="0 0 24 24" class="spk"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="cross" d="M16 9l5 6m0-6l-5 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+          <button class="ibtn" id="btnSettingsHud" aria-label="Settings">
+            <svg viewBox="0 0 24 24"><path d="M19.4 13a7.7 7.7 0 000-2l2-1.6-2-3.4-2.4 1a7.5 7.5 0 00-1.7-1L15 3.4h-4l-.4 2.6a7.5 7.5 0 00-1.7 1l-2.4-1-2 3.4 2 1.6a7.7 7.7 0 000 2l-2 1.6 2 3.4 2.4-1a7.5 7.5 0 001.7 1l.4 2.6h4l.4-2.6a7.5 7.5 0 001.7-1l2.4 1 2-3.4-2-1.6zM13 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" transform="translate(-1 0)"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="hp-row">
+        <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 5.8-8 11-8 11z"/></svg>
+        <div class="hp-bar" id="hpBar">
+          <div class="hp-ghost" id="hpGhost"></div>
+          <div class="hp-fill" id="hpFill"></div>
+          <div class="hp-text" id="hpText">100</div>
+        </div>
+      </div>
+      <div class="chips">
+        <div class="chip wave">WAVE <b id="waveNum">1</b></div>
+        <div class="chip">KILLS <b id="killNum">0</b></div>
+        <div class="chip">BEST <b id="bestNum">0</b></div>
+      </div>
+      <div id="combo" class="combo"></div>
+    </div>
+
+    <div id="banner"><div class="b-title"></div><div class="b-sub"></div></div>
+
+    <button id="shootBtn" class="hidden" aria-label="Shoot">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 1.5v5M12 17.5v5M1.5 12h5M17.5 12h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>SHOOT</span>
+    </button>
+
+    <!-- ============ MAIN MENU ============ -->
+    <section class="screen show" id="menu">
+      <div class="logo">
+        <div class="logo-top">MOSQUITO</div>
+        <div class="logo-bot">SHOOTER</div>
+        <div class="tagline">Sleep tight. Don't let the bugs bite!</div>
+      </div>
+      <div class="hiscore-pill">🏆 HIGH SCORE <b id="menuBest">0</b></div>
+      <div class="menu-btns">
+        <button class="btn primary big" id="btnPlay">▶ START GAME</button>
+        <button class="btn" id="btnHow">HOW TO PLAY</button>
+        <button class="btn" id="btnSettingsMenu">SETTINGS</button>
+        <button class="btn install hidden" id="btnInstall">📲 INSTALL APP</button>
+      </div>
+      <div id="iosTip" class="iostip hidden">📲 iPhone: tap <b>Share</b> ⬆️ then <b>Add to Home Screen</b></div>
+      <button class="ibtn corner" id="btnSoundMenu" aria-label="Mute / unmute"><svg viewBox="0 0 24 24" class="spk"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="cross" d="M16 9l5 6m0-6l-5 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </section>
+
+    <!-- ============ HOW TO PLAY ============ -->
+    <section class="screen" id="howto">
+      <div class="panel">
+        <h2>HOW TO PLAY</h2>
+        <ul class="how">
+          <li><span class="ic">🦟</span><div><b>Mosquitoes attack!</b> They fly in and bite our sleepy hero. Every bite sets his skin on fire and drains health.</div></li>
+          <li><span class="ic">👆</span><div><b>Tap or click</b> anywhere to fire his… <i>third leg</i>… at that spot. Hold to keep firing.</div></li>
+          <li><span class="ic">🎯</span><div>Hold the big <b>SHOOT</b> button (or <b>Space</b>) to auto-aim at the most dangerous bug.</div></li>
+          <li><span class="ic">🔥</span><div>Kill fast to build <b>combos</b>. Streaks and wave clears give bonus points.</div></li>
+          <li><span class="ic">⭐</span><div>Shoot the <b>golden mosquito</b> to heal! Watch for armored bugs and the Queen.</div></li>
+          <li><span class="ic">⌨️</span><div><b>Esc / P</b> pause &nbsp;•&nbsp; <b>M</b> mute</div></li>
+        </ul>
+        <button class="btn primary" data-back>GOT IT!</button>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS ============ -->
+    <section class="screen" id="settings">
+      <div class="panel">
+        <h2>SETTINGS</h2>
+        <label class="row"><span>Sound</span>
+          <button class="switch" id="swMute" role="switch" aria-checked="true"><i></i></button></label>
+        <label class="row slider"><span>Master volume</span><input type="range" id="rgMaster" min="0" max="100"></label>
+        <label class="row slider"><span>Mosquito buzz</span><input type="range" id="rgBuzz" min="0" max="100"></label>
+        <label class="row slider"><span>Effects (bite / swarm / game over)</span><input type="range" id="rgFx" min="0" max="100"></label>
+        <label class="row"><span>Screen shake</span><button class="switch" id="swShake" role="switch" aria-checked="true"><i></i></button></label>
+        <label class="row"><span>Vibration (phones)</span><button class="switch" id="swVibe" role="switch" aria-checked="true"><i></i></button></label>
+        <button class="btn small danger" id="btnReset">RESET HIGH SCORE</button>
+        <button class="btn primary" data-back>BACK</button>
+      </div>
+    </section>
+
+    <!-- ============ PAUSE ============ -->
+    <section class="screen" id="pause">
+      <div class="panel">
+        <h2>PAUSED</h2>
+        <p class="sub">Even heroes need a snooze.</p>
+        <button class="btn primary big" id="btnResume">▶ RESUME</button>
+        <button class="btn" id="btnRestartP">↻ RESTART</button>
+        <button class="btn" id="btnMenuP">⌂ MAIN MENU</button>
+      </div>
+    </section>
+
+    <!-- ============ GAME OVER ============ -->
+    <section class="screen" id="gameover">
+      <div class="panel go">
+        <h2 class="go-title">GAME OVER</h2>
+        <p class="sub" id="goQuip">The mosquitoes win this round…</p>
+        <div class="newbest hidden" id="newBest">★ NEW HIGH SCORE ★</div>
+        <div class="go-score"><div class="lbl">FINAL SCORE</div><div class="big-num" id="goScore">0</div></div>
+        <div class="go-stats">
+          <div><span>BEST</span><b id="goBest">0</b></div>
+          <div><span>WAVE</span><b id="goWave">1</b></div>
+          <div><span>KILLS</span><b id="goKills">0</b></div>
+        </div>
+        <button class="btn primary big" id="btnRestartG">↻ PLAY AGAIN</button>
+        <button class="btn" id="btnMenuG">⌂ MAIN MENU</button>
+      </div>
+    </section>
+  </div>
+</div>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

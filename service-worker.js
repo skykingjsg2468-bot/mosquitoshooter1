@@ -1,12 +1,12 @@
 /* Mosquito Shooter — service worker (offline caching)
    To ship an update to players, change CACHE_VERSION (e.g. v2) and redeploy. */
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE = 'mosquito-shooter-' + CACHE_VERSION;
 const ASSETS = [
   './', 'index.html', 'style.css', 'manifest.json',
   'js/audio.js', 'js/art.js', 'js/game.js',
   'assets/sounds/mosquito-flying.mp3', 'assets/sounds/mosquito-excess.mp3',
-  'assets/sounds/mosquito-bite.mp3', 'assets/sounds/game-over.mp3',
+  'assets/sounds/mosquito-bite.mp3', 'assets/sounds/game-over.mp3', 'assets/sounds/rekha-scream.mp3',
   'assets/fonts/bangers-latin-400-normal.woff2', 'assets/fonts/fredoka-latin-500-normal.woff2', 'assets/fonts/fredoka-latin-700-normal.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-192.png', 'icons/icon-maskable-512.png',
   'icons/apple-touch-icon.png', 'icons/favicon-48.png'

@@ -20,7 +20,7 @@ A funny, chaotic 2D arcade shooter. Our hero is sleeping peacefully when mosquit
 
 * Every bite drains health, sets the hero's skin on fire 🔥 and plays the bite sound. Health 0 = game over.
 * Kill quickly for **combos** (up to ×5 points), keep a **kill streak**, finish waves for **bonuses** (perfect wave = no bites).
-* Mosquito types: **Normal**, **Fast** (wave 2+), **Fat** (wave 3+), **Armored** (wave 4+), **Golden** (rare – shoot it to heal!) and the **Queen** (every 5th wave).
+* Mosquito types: **Normal**, **Fast** (wave 2+), **Fat** (wave 3+), **Armored** (wave 4+), **Golden** (rare – shoot it to heal!) the **Queen** (every 5th wave) and **Rekha**, a diva mosquito (original cartoon character) who appears from wave 3 — her bites make the hero scream (`rekha-scream.mp3`).
 * High score is saved in the browser (`localStorage`).
 
 ### Sound system (your uploaded files)
@@ -30,6 +30,7 @@ A funny, chaotic 2D arcade shooter. Our hero is sleeping peacefully when mosquit
 | `assets/sounds/mosquito-flying.mp3` | Loops while mosquitoes exist; volume rises with the number of mosquitoes, fades out at zero |
 | `assets/sounds/mosquito-excess.mp3` | "Swarm alert": 9+ mosquitoes alive, 3 bites within 3 s, or the Queen arrives — 14 s cooldown |
 | `assets/sounds/mosquito-bite.mp3` | Instantly on every successful bite (with fire effect, damage number, hero reaction) |
+| `assets/sounds/rekha-scream.mp3` | Instead of the normal bite sound, whenever **Rekha** bites the hero |
 | `assets/sounds/game-over.mp3` | When health reaches zero; all other sounds stop first |
 
 Audio starts only after the first tap/click (browser autoplay rules). Settings has master / buzz / effects volume and mute. Pausing suspends audio; restart and main menu stop everything.
@@ -52,7 +53,7 @@ mosquito-shooter/
 │   ├── art.js            ← all artwork, drawn with canvas code (bedroom, hero, mosquitoes, fire)
 │   └── game.js           ← gameplay, waves, scoring, input, UI wiring
 ├── assets/
-│   ├── sounds/           ← your 4 mp3 files
+│   ├── sounds/           ← your 5 mp3 files
 │   ├── fonts/            ← Bangers + Fredoka (open source, SIL OFL) — works offline
 │   └── images/reference-sketch.jpg
 └── icons/                ← app icons (192, 512, maskable, apple-touch, favicon)

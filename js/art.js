@@ -468,7 +468,8 @@ const Art = (() => {
     fat:     { body: '#3f8a3a', stripe: '#c5f2a0', eye: '#ff5a3b', wing: 'rgba(210,255,220,.5)' },
     armored: { body: '#7d8c9d', stripe: '#d6dfe8', eye: '#ff3b3b', wing: 'rgba(210,235,255,.5)' },
     golden:  { body: '#e8a40c', stripe: '#fff2a8', eye: '#ffffff', wing: 'rgba(255,245,180,.7)' },
-    queen:   { body: '#7a1038', stripe: '#ff9ac2', eye: '#ffe14a', wing: 'rgba(255,200,230,.55)' }
+    queen:   { body: '#7a1038', stripe: '#ff9ac2', eye: '#ffe14a', wing: 'rgba(255,200,230,.55)' },
+    rekha:   { body: '#c2185b', stripe: '#ffd54a', eye: '#ffffff', wing: 'rgba(255,190,120,.6)' }
   };
 
   function drawMosquito(g, m, T, flat) {
@@ -524,12 +525,14 @@ const Art = (() => {
     // antennae
     g.strokeStyle = '#1c1624'; g.lineWidth = 1; g.beginPath(); g.moveTo(12, -6); g.quadraticCurveTo(15, -13, 21, -13); g.moveTo(10, -6); g.quadraticCurveTo(10, -14, 15, -16); g.stroke();
     // head
+    if (m.type === 'rekha') { drawDivaHead(g, m); } else {
     g.fillStyle = body; g.beginPath(); g.arc(11, -1, 6.8, 0, 7); g.fill();
     // eye
     g.fillStyle = '#fff'; g.beginPath(); g.arc(13.5, -2.5, 4.4, 0, 7); g.fill();
     g.fillStyle = pal.eye; g.beginPath(); g.arc(14.6, -2.2, 2.5, 0, 7); g.fill();
     g.fillStyle = '#111'; g.beginPath(); g.arc(15.2, -2.2, 1.2, 0, 7); g.fill();
     g.strokeStyle = '#111'; g.lineWidth = 1.8; g.beginPath(); g.moveTo(9.5, -8.6); g.lineTo(17.5, -4.8); g.stroke();   // angry brow
+    }
     // type extras
     if (m.type === 'armored') {
       g.fillStyle = '#aab6c4'; g.beginPath(); g.arc(11, -2, 8, Math.PI * 1.02, Math.PI * 1.98); g.closePath(); g.fill();
@@ -554,6 +557,28 @@ const Art = (() => {
       g.fillStyle = 'rgba(0,0,0,.6)'; rr(g, bx - 1, by - 1, bw + 2, 6, 3); g.fill();
       g.fillStyle = m.hp / m.maxhp > 0.4 ? '#7dff6a' : '#ff5a4a'; rr(g, bx, by, Math.max(2, bw * m.hp / m.maxhp), 4, 2); g.fill();
     }
+  }
+  /* original cartoon diva face for the "Rekha" mosquito (invented character) */
+  function drawDivaHead(g, m) {
+    g.save(); g.translate(12, -2);
+    g.fillStyle = '#1d1020'; g.beginPath(); g.arc(-3, -9, 6, 0, 7); g.fill();                 // hair bun
+    g.fillStyle = '#1d1020'; g.beginPath(); g.arc(0, -1, 11.5, Math.PI * 0.95, Math.PI * 2.05); g.fill(); // hair
+    g.fillStyle = m.hitFlash > 0 ? '#fff' : '#f2b48a'; g.beginPath(); g.arc(1, 1, 10, 0, 7); g.fill();     // face
+    g.fillStyle = '#1d1020'; g.beginPath(); g.arc(0, -3, 10.3, Math.PI * 1.08, Math.PI * 1.95); g.lineTo(6, -4); g.lineTo(-8, -3); g.fill(); // fringe
+    // big dramatic eyes
+    g.fillStyle = '#fff'; g.beginPath(); g.ellipse(-2, 0, 3.4, 2.6, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(6, 0, 3.4, 2.6, 0, 0, 7); g.fill();
+    g.fillStyle = '#2a1208'; g.beginPath(); g.arc(-1.2, 0.2, 1.7, 0, 7); g.fill(); g.beginPath(); g.arc(6.8, 0.2, 1.7, 0, 7); g.fill();
+    g.strokeStyle = '#000'; g.lineWidth = 1.2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-6, -1.2); g.lineTo(-1, -2.8); g.lineTo(2, -2); g.moveTo(3, -2); g.lineTo(7, -2.8); g.lineTo(10.5, -1.4); g.stroke();   // winged liner + lashes
+    g.lineWidth = 1; g.beginPath(); g.moveTo(-5, -4.8); g.quadraticCurveTo(-2, -6.5, 1, -4.6); g.moveTo(4, -4.6); g.quadraticCurveTo(7, -6.5, 10, -4.8); g.stroke(); // brows
+    // red lips (pouty / screaming smile)
+    g.fillStyle = '#e3122f'; g.beginPath(); g.ellipse(3, 6.2, 3.6, 1.8, 0, 0, 7); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.5)'; g.fillRect(1.5, 5.6, 2.6, 0.7);
+    // blush, gold earring, bindi
+    g.fillStyle = 'rgba(255,90,120,.35)'; g.beginPath(); g.arc(-4, 4, 2.2, 0, 7); g.fill(); g.beginPath(); g.arc(10, 4, 2.2, 0, 7); g.fill();
+    g.fillStyle = '#ffd54a'; g.beginPath(); g.arc(-8, 6, 2, 0, 7); g.fill(); g.strokeStyle = '#a77a0d'; g.lineWidth = .7; g.stroke();
+    g.fillStyle = '#d50000'; g.beginPath(); g.arc(3, -5.6, 0.9, 0, 7); g.fill();
+    g.restore();
   }
   function wing(g, x, y, rot, sy, col, sc, a) {
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(sc, sc * sy);

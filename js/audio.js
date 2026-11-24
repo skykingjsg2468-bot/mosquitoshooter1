@@ -15,7 +15,8 @@ const Sound = (() => {
     buzz:  'assets/sounds/mosquito-flying.mp3',
     swarm: 'assets/sounds/mosquito-excess.mp3',
     bite:  'assets/sounds/mosquito-bite.mp3',
-    over:  'assets/sounds/game-over.mp3'
+    over:  'assets/sounds/game-over.mp3',
+    scream:'assets/sounds/rekha-scream.mp3'
   };
   const KEY = 'mosquitoShooter.audio.v1';
 
@@ -26,7 +27,7 @@ const Sound = (() => {
   let useHtml = false;
   let unlocked = false, suspended = false;
   let buzzSrc = null, buzzGain = null, buzzStopTimer = null, buzzLevel = 0;
-  let active = { bite: [], swarm: [], over: [] };
+  let active = { bite: [], swarm: [], over: [], scream: [] };
   let lastBite = 0;
 
   const settings = Object.assign({ master: 0.85, buzz: 0.7, fx: 1.0, muted: false }, load());
@@ -122,7 +123,7 @@ const Sound = (() => {
     }
     if (htmlEls) {
       htmlEls.buzz.volume = clamp01(m * settings.buzz * buzzLevel);
-      ['bite', 'swarm', 'over'].forEach(k => htmlEls[k].volume = clamp01(m * settings.fx));
+      ['bite', 'swarm', 'over', 'scream'].forEach(k => htmlEls[k].volume = clamp01(m * settings.fx));
     }
   }
   const clamp01 = v => Math.max(0, Math.min(1, v));
@@ -196,7 +197,7 @@ const Sound = (() => {
   /* stop everything (restart / menu / game over) */
   function stopAll(except) {
     stopBuzzNow();
-    ['bite', 'swarm', 'over'].forEach(k => {
+    ['bite', 'swarm', 'over', 'scream'].forEach(k => {
       if (k === except) return;
       active[k].forEach(s => { try { s.stop(); } catch (e) {} });
       active[k] = [];

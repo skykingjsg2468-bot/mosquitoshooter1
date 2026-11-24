@@ -37,7 +37,8 @@
     fat:     { r: 23, hp: 3,  speed: 36,  dmg: 12, pts: 35,  wob: 0.5 },
     armored: { r: 19, hp: 3,  speed: 46,  dmg: 10, pts: 50,  wob: 0.6 },
     golden:  { r: 16, hp: 2,  speed: 88,  dmg: 4,  pts: 200, wob: 1.7 },
-    queen:   { r: 34, hp: 14, speed: 24,  dmg: 22, pts: 500, wob: 0.3 }
+    queen:   { r: 34, hp: 14, speed: 24,  dmg: 22, pts: 500, wob: 0.3 },
+    rekha:   { r: 21, hp: 4,  speed: 66,  dmg: 14, pts: 150, wob: 1.2 }
   };
   const KILL_WORDS = ['SPLAT!', 'BZZT!', 'PFFT!', 'NOPE!', 'SQUISH!', 'BYE!', 'POP!', 'ZAP!'];
   const BITE_WORDS = ['OUCH!', 'ITCHY!', 'AARGH!', 'MY SKIN!', 'BURNS!', 'YEOWCH!'];
@@ -144,6 +145,7 @@
     if (type === 'armored') hp = 3 + Math.floor(w / 6);
     if (type === 'fat') hp = 3 + Math.floor(w / 8);
     if (type === 'queen') hp = 14 + 4 * Math.floor(w / 5);
+    if (type === 'rekha') { hp = 4 + Math.floor(w / 4); if (mosq.length < 40 && WV.n > 0) { showBanner('REKHA ARRIVES!', 'The diva mosquito screams back…', 'alert', 2); } }
     const si = Math.floor(Math.random() * Art.SPOTS.length), sp = Art.spot(si);
     const m = {
       type, def: d, x, y, vx: 0, vy: 0, hp, maxhp: hp, r: d.r, speed: d.speed * WV.speedMul * rand(0.9, 1.15),
@@ -161,6 +163,7 @@
     if (w >= 3) bag.push(['fat', 14 + w * 2]);
     if (w >= 4) bag.push(['armored', 12 + w * 2]);
     if (w >= 3 && !mosq.some(m => m.type === 'golden') && Math.random() < 0.09) return 'golden';
+    if (w >= 3 && !mosq.some(m => m.type === 'rekha') && Math.random() < Math.min(0.3, 0.12 + 0.02 * (w - 3))) return 'rekha';
     const tot = bag.reduce((a, b) => a + b[1], 0); let r = Math.random() * tot;
     for (const b of bag) { r -= b[1]; if (r <= 0) return b[0]; }
     return 'normal';
@@ -216,10 +219,10 @@
     fires.push({ x: f.x, y: f.y, life: 1.7, max: 1.7, s: m.type === 'queen' ? 1.5 : m.type === 'fat' ? 1.2 : 1, seed: rand(0, 6) });
     welts.push({ x: f.x, y: f.y, life: 6, max: 6 });
     floatText(f.x + rand(-10, 10), f.y - 44, '-' + d.dmg, '#ff5a5a', 38, 1.1);
-    floatText(f.x + rand(-20, 20), f.y - 82, pick(BITE_WORDS), '#ffd84a', 28, 0.9);
+    floatText(f.x + rand(-20, 20), f.y - 82, m.type === 'rekha' ? 'AAAAAAGH!!' : pick(BITE_WORDS), m.type === 'rekha' ? '#ff6ad5' : '#ffd84a', m.type === 'rekha' ? 40 : 28, 0.9);
     shake = Math.max(shake, 9); redFlash(false);
     el.hpBar.classList.remove('shake'); void el.hpBar.offsetWidth; el.hpBar.classList.add('shake');
-    Sound.play('bite');
+    Sound.play(m.type === 'rekha' ? 'scream' : 'bite');
     if (opts.vibe && navigator.vibrate) { try { navigator.vibrate(d.dmg > 10 ? [60, 30, 60] : 50); } catch (e) {} }
     S.combo = 0;
     biteTimes.push(T); biteTimes = biteTimes.filter(t => T - t < 3);
@@ -236,7 +239,7 @@
     const pts = d.pts * mult;
     S.score += pts; S.kills++; S.streak++;
     // visuals
-    const col = m.type === 'golden' ? '#ffd84a' : m.type === 'fast' ? '#b07aff' : m.type === 'queen' ? '#ff4f8f' : '#7dff4a';
+    const col = m.type === 'rekha' ? '#ff6ad5' : m.type === 'golden' ? '#ffd84a' : m.type === 'fast' ? '#b07aff' : m.type === 'queen' ? '#ff4f8f' : '#7dff4a';
     addP({ type: 'splat', x: m.x, y: m.y, size: m.r * 1.3, life: 0.45, max: 0.45, color: col });
     addP({ type: 'ring', x: m.x, y: m.y, size: m.r * 3.2, life: 0.4, max: 0.4, color: 'rgba(255,255,255,.9)' });
     burst(m.x, m.y, col, m.type === 'queen' ? 36 : 12, 260, 5, 0.7);
